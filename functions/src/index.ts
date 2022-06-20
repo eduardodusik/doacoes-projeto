@@ -40,6 +40,7 @@ app.post("/eventos", async (req, res) => {
 
     const newDoc = await db.collection(eventoCollection).add(evento);
     res.status(201).send(`Criado um novo evento: ${newDoc.id}`);
+    functions.logger.info(`POST evento: ${newDoc.id}`);
   } catch (error) {
     // eslint-disable-next-line max-len
     res.status(400).send("Deveria conter um name, typeEvent, location, initDate, endDate !!!");
