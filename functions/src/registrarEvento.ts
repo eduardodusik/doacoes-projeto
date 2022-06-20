@@ -1,19 +1,19 @@
-//import * as admin from 'firebase-admin'
-//import { Response } from 'express'
+// import * as admin from 'firebase-admin'
+// import { Response } from 'express'
 //
-//const db = admin.firestore()
+// const db = admin.firestore()
 //
-//export type Evento = {
+// export type Evento = {
 //  id?: string;
 //  description: string;
 //  datahora: EpochTimeStamp;
-//}
-//type Request = {
+// }
+// type Request = {
 //  body: Evento,
 //  params: { eventoId: string}
-//}
+// }
 //
-//const registrarEvento = async (req: Request, res: Response) => {
+// const registrarEvento = async (req: Request, res: Response) => {
 //  const { description, datahora } = req.body
 //  try {
 //    const evento = db.collection('eventos').doc()
@@ -33,6 +33,6 @@
 //  } catch(err) {
 //      res.status(500).json(`Internal Server Error: ${err}`)
 //  }
-//}
+// }
 //
-//export { registrarEvento }
+// export { registrarEvento }
