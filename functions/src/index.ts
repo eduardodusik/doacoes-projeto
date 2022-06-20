@@ -14,31 +14,39 @@ main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({extended: false}));
 
 // initialize the database and the collection
-const eventoCollection = "eventos";
+const eventsCollection = "events";
 
 // define google cloud function name
 export const api = functions.https.onRequest(main);
 
-interface Evento {
-  name: string,
-  typeEvent: string,
-  location: string,
-  initDate: Date,
-  endDate: Date,
+interface IEvent {
+  id?: string
+  name: string
+  description: string
+  address: string
+  city: string
+  dueDate: string
+  responsibleName: string
+  phoneNumber: string
+  createdAt: string
 }
 
-// Cria um novo evento
-app.post("/eventos", async (req, res) => {
+
+// Cria um novo evento.
+app.post("/events", async (req, res) => {
   try {
-    const evento: Evento = {
-      name: req.body["name"],
-      typeEvent: req.body["typeEvent"],
-      location: req.body["location"],
-      initDate: req.body["initDate"],
-      endDate: req.body["endDate"],
+    const eventData: IEvent = {
+      name: req.body.name,
+      description: req.body.description,
+      address: req.body.address,
+      city: req.body.city,
+      dueDate: req.body.dueDate,
+      responsibleName: req.body.responsibleName,
+      phoneNumber: req.body.phoneNumber,
+      createdAt: new Date().toISOString(),
     };
 
-    const newDoc = await db.collection(eventoCollection).add(evento);
+    const newDoc = await db.collection(eventsCollection).add(eventData);
     res.status(201).send(`Criado um novo evento: ${newDoc.id}`);
     functions.logger.info(`POST evento: ${newDoc.id}`);
   } catch (error) {
@@ -48,40 +56,32 @@ app.post("/eventos", async (req, res) => {
 });
 
 // Consulta um evento
-app.get("/eventos/:eventoId", (req, res) => {
-  const eventoId = req.params.eventoId;
-  db.collection(eventoCollection).doc(eventoId).get()
-      .then((evento) => {
-        if (!evento.exists) throw new Error("evento not found");
-        res.status(200).json({id: evento.id, data: evento.data()});
+app.get("/events/:id", (req, res) => {
+  const eventId = req.params.id;
+  db.collection(eventsCollection).doc(eventId).get()
+      .then((event) => {
+        if (!event.exists) throw new Error("Event not found");
+        res.status(200).json({id: event.id, ...event.data()});
       })
       .catch((error) => res.status(500).send(error));
 });
 
 
-// Deleta um evento
-app.delete("/eventos/:eventoId", (req, res) => {
-  db.collection(eventoCollection).doc(req.params.eventoId).delete()
-      .then(()=>res.status(204).send("Document successfully deleted!"))
-      .catch(function(error) {
-        res.status(500).send(error);
-      });
-});
-
 // Lista todos os eventos
-app.get("/eventos", async (req, res) => {
+app.get("/events", async (req, res) => {
   try {
-    const eventoQuerySnapshot = await db.collection(eventoCollection).get();
-    const eventos: unknown[] = [];
-    eventoQuerySnapshot.forEach(
+    const eventQuerySnapshot = await db.collection(eventsCollection).get();
+    const eventList: IEvent[] = [];
+
+    eventQuerySnapshot.forEach(
         (doc)=>{
-          eventos.push({
+          eventList.push({
             id: doc.id,
-            data: doc.data(),
+            ...doc.data() as IEvent,
           });
         }
     );
-    res.status(200).json(eventos);
+    res.status(200).json(eventList);
   } catch (error) {
     res.status(500).send(error);
   }
