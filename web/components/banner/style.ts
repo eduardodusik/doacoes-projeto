@@ -1,15 +1,14 @@
 import styled from "styled-components";
 
 const StyledBanner = styled.div`
-  background-image: url("static/banner.jpg");
-  min-height: 50vh;
-  background-size: cover;
-  opacity: 0.8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
+  width: 100%;
+  height: 50vh;
+  position: relative;
   border-radius: 1rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const StyledText = styled.span`
@@ -17,6 +16,8 @@ const StyledText = styled.span`
   font-weight: bold;
   color: white;
   text-shadow: 2px 2px 4px #000000;
+  position: absolute;
+  z-index: 999;
 `
 
 export { StyledBanner, StyledText }

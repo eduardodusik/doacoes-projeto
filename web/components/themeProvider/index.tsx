@@ -6,8 +6,6 @@ const theme = createTheme({
   typography: {
     allVariants: {
       fontFamily: 'Raleway',
-      textTransform: 'none',
-      fontSize: 15,
     },
   },
   palette: {

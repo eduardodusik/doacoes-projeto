@@ -4,4 +4,5 @@ html, body {
   height: 100vh;
   overflow: hidden;
   font-family: Raleway;
+  margin: 0;
 }
