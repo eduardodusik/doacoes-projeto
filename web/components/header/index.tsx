@@ -10,7 +10,6 @@ const Header = () => {
     <AppBar position="sticky" style={{ backgroundColor: 'white', color: 'black' }}>
       <Container maxWidth="xl">
         <Box p={3} display="flex" justifyContent="space-between">
-          <div/>
           <Link href="/">DoacoesUlbra</Link>
           <Link href="/create">
             <Button variant="outlined">

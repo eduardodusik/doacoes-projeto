@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 
 admin.initializeApp();
 
@@ -9,6 +10,8 @@ const db = admin.firestore();
 const app = express();
 const main = express();
 
+app.use(cors({origin: "*"}));
+main.use(cors({origin: "*"}));
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({extended: false}));
@@ -25,7 +28,6 @@ interface IEvent {
   description: string
   address: string
   city: string
-  dueDate: string
   responsibleName: string
   phoneNumber: string
   createdAt: string
@@ -34,13 +36,13 @@ interface IEvent {
 
 // Cria um novo evento.
 app.post("/events", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   try {
     const eventData: IEvent = {
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
       city: req.body.city,
-      dueDate: req.body.dueDate,
       responsibleName: req.body.responsibleName,
       phoneNumber: req.body.phoneNumber,
       createdAt: new Date().toISOString(),
@@ -51,12 +53,13 @@ app.post("/events", async (req, res) => {
     functions.logger.info(`POST evento: ${newDoc.id}`);
   } catch (error) {
     // eslint-disable-next-line max-len
-    res.status(400).send("Deveria conter um name, typeEvent, location, initDate, endDate !!!");
+    res.status(400).send(error);
   }
 });
 
 // Consulta um evento
 app.get("/events/:id", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   const eventId = req.params.id;
   db.collection(eventsCollection).doc(eventId).get()
       .then((event) => {
@@ -69,6 +72,7 @@ app.get("/events/:id", (req, res) => {
 
 // Lista todos os eventos
 app.get("/events", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   try {
     const eventQuerySnapshot = await db.collection(eventsCollection).get();
     const eventList: IEvent[] = [];

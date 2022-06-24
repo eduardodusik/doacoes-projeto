@@ -8,7 +8,7 @@ const Banner = () => {
 
   return (
     <StyledBanner>
-      <StyledText>Lorem ipsum </StyledText>
+      <StyledText>Encontre locais para realizar doações. <br />Cadastre pontos de coleta.</StyledText>
       <Image
         alt="Faça sua parte"
         src="/banner.jpg"

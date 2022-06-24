@@ -1,21 +1,10 @@
 import {NextPage} from "next";
-import {Box, Container, TextField, Typography} from "@mui/material";
-import {ReactNode, useState} from "react";
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-interface IEvent {
-  id?: string
-  name: string
-  description: string
-  address: string
-  city: string
-  dueDate: string
-  responsibleName: string
-  phoneNumber: string
-  createdAt: string
-}
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
+import {ReactNode, useCallback, useState} from "react";
+import {Formik, useFormik} from "formik";
+import MuiPhoneNumber from "material-ui-phone-number";
+import {CreateEventPayload} from "../../models/events";
+import {eventsService} from "../../services/events";
 
 const Item = ({children}: { children: ReactNode }) => {
   return (
@@ -25,57 +14,100 @@ const Item = ({children}: { children: ReactNode }) => {
   )
 }
 
+
+const INITIAL_VALUES: CreateEventPayload = {
+  description: '',
+  phoneNumber: '',
+  responsibleName: '',
+  address: '',
+  city: '',
+  name: ''
+}
+
 const Create: NextPage = () => {
-  // const [value, setValue] = useState<Date | null>(
-  //   new Date('2014-08-18T21:11:54'),
-  // );
-  //
-  // const handleChange = (newValue: Date | null) => {
-  //   setValue(newValue);
-  // };
+  const { handleSubmit, handleChange, values, setFieldValue, isSubmitting, setSubmitting } = useFormik({
+    initialValues: INITIAL_VALUES,
+    onSubmit: (values) => {
+      createEvent(values)
+    },
+  });
+
+
+  const createEvent = useCallback(async (values: CreateEventPayload) => {
+    try {
+      await eventsService.createEvent(values)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setSubmitting(false)
+    }
+  }, [setSubmitting])
+
+
   return (
-    <Container maxWidth="md">
-      <Box pb={2} display="flex" alignItems="flex-start" flexDirection="column">
-        <Typography variant="h4" fontWeight="bold">
-          Novo ponto de coleta
-        </Typography>
-        <Typography color="textSecondary" variant="subtitle1">
-          Preencha as informações do local de coleta de doação.
-        </Typography>
-      </Box>
-      <Box display="flex" flexDirection="column">
-        <Item>
-          <TextField label="Nome do evento" placeholder="Arrecadação de casacos em canoas..." fullWidth/>
-        </Item>
-        <Item>
-          <TextField label="Preencha com a descrição" placeholder="Doe seu casaco guardado para alguém que precise..."
-                     fullWidth/>
-        </Item>
-        <Item>
-          <TextField label="Endereço do local de coleta" placeholder="Rua Alvorada, 220, Bairro Novo" fullWidth/>
-        </Item>
-        <Item>
-          <TextField label="Cidade" placeholder="Canoas" fullWidth/>
-        </Item>
-        <Item>
-          <TextField label="Nome do responsável da coleta" placeholder="Eduardo ou João" fullWidth/>
-        </Item>
-        {/*<Item>*/}
-        {/*  <LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-        {/*    <DesktopDatePicker*/}
-        {/*      label="Date desktop"*/}
-        {/*      inputFormat="MM/dd/yyyy"*/}
-        {/*      value={value}*/}
-        {/*      onChange={handleChange}*/}
-        {/*      renderInput={(params) => <TextField {...params} />}*/}
-        {/*    />*/}
-        {/*  </LocalizationProvider>*/}
-        {/*</Item>*/}
-        <Item>
-          <TextField label="Número de contato" placeholder="(51) 99999-9999" fullWidth/>
-        </Item>
-      </Box>
-    </Container>
+    <form onSubmit={handleSubmit}>
+      <Container maxWidth="md">
+        <Box pb={2} display="flex" alignItems="flex-start" flexDirection="column">
+          <Typography variant="h4" fontWeight="bold">
+            Novo ponto de coleta
+          </Typography>
+          <Typography color="textSecondary" variant="subtitle1">
+            Preencha as informações do local de coleta de doação.
+          </Typography>
+        </Box>
+        <Box display="flex" flexDirection="column">
+          <Item>
+            <TextField
+              name="name"
+              onChange={handleChange}
+              value={values.name}
+              label="Nome do evento" placeholder="Arrecadação de casacos em canoas..." fullWidth/>
+          </Item>
+          <Item>
+            <TextField
+              name="description"
+              onChange={handleChange}
+              value={values.description}
+              label="Preencha com a descrição" placeholder="Doe seu casaco guardado para alguém que precise..."
+                       fullWidth/>
+          </Item>
+          <Item>
+            <TextField
+              name="address"
+              onChange={handleChange}
+              value={values.address}
+              label="Endereço do local de coleta" placeholder="Rua Alvorada, 220, Bairro Novo" fullWidth/>
+          </Item>
+          <Item>
+            <TextField
+              name="city"
+              onChange={handleChange}
+              value={values.city}
+              label="Cidade" placeholder="Canoas" fullWidth/>
+          </Item>
+          <Item>
+            <TextField
+              name="responsibleName"
+              onChange={handleChange}
+              value={values.responsibleName}
+              label="Nome do responsável da coleta" placeholder="Eduardo ou João" fullWidth/>
+          </Item>
+          <Item>
+            <MuiPhoneNumber
+              name="phoneNumber"
+              defaultCountry="br"
+              onChange={(newValue) => setFieldValue('phoneNumber', newValue)}
+              value={values.phoneNumber}
+              label="Número de contato" placeholder="(51) 99999-9999" fullWidth/>
+          </Item>
+          <Box display="flex" justifyContent="flex-end" pt={2}>
+            <Button disabled={isSubmitting} type="submit" variant="contained" color="secondary" size="large">
+              Enviar
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </form>
   )
 }
 

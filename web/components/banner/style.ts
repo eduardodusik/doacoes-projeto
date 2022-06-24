@@ -14,6 +14,7 @@ const StyledBanner = styled.div`
 const StyledText = styled.span`
   font-size: 2rem;
   font-weight: bold;
+  text-align: center;
   color: white;
   text-shadow: 2px 2px 4px #000000;
   position: absolute;
