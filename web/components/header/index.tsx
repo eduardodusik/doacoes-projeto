@@ -19,7 +19,7 @@ const Header = () => {
 
           <Link href="/create">
             <Button variant="outlined">
-              Cadastrar evento
+              Cadastrar ponto de coleta
             </Button>
           </Link>
         </Box>
