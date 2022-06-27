@@ -5,6 +5,8 @@ import {Formik, useFormik} from "formik";
 import MuiPhoneNumber from "material-ui-phone-number";
 import {CreateEventPayload} from "../../models/events";
 import {eventsService} from "../../services/events";
+import {useRouter} from "next/router";
+import {useSnackbar} from "notistack";
 
 const Item = ({children}: { children: ReactNode }) => {
   return (
@@ -25,6 +27,8 @@ const INITIAL_VALUES: CreateEventPayload = {
 }
 
 const Create: NextPage = () => {
+  const { push } = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
   const { handleSubmit, handleChange, values, setFieldValue, isSubmitting, setSubmitting } = useFormik({
     initialValues: INITIAL_VALUES,
     onSubmit: (values) => {
@@ -36,12 +40,15 @@ const Create: NextPage = () => {
   const createEvent = useCallback(async (values: CreateEventPayload) => {
     try {
       await eventsService.createEvent(values)
+      enqueueSnackbar("Ponto de coleta criado com sucesso!", { variant: 'success'})
+      push('/')
     } catch (err) {
       console.log(err)
+      enqueueSnackbar("Ocorreu um erro ao cadastrar o ponto de coleta. Tente novamente.", { variant: 'error'})
     } finally {
       setSubmitting(false)
     }
-  }, [setSubmitting])
+  }, [push, setSubmitting])
 
 
   return (
@@ -59,12 +66,14 @@ const Create: NextPage = () => {
           <Item>
             <TextField
               name="name"
+              required
               onChange={handleChange}
               value={values.name}
               label="Nome do evento" placeholder="Arrecadação de casacos em canoas..." fullWidth/>
           </Item>
           <Item>
             <TextField
+              required
               name="description"
               onChange={handleChange}
               value={values.description}
@@ -73,6 +82,7 @@ const Create: NextPage = () => {
           </Item>
           <Item>
             <TextField
+              required
               name="address"
               onChange={handleChange}
               value={values.address}
@@ -87,6 +97,7 @@ const Create: NextPage = () => {
           </Item>
           <Item>
             <TextField
+              required
               name="responsibleName"
               onChange={handleChange}
               value={values.responsibleName}
@@ -94,6 +105,7 @@ const Create: NextPage = () => {
           </Item>
           <Item>
             <MuiPhoneNumber
+              required
               name="phoneNumber"
               defaultCountry="br"
               onChange={(newValue) => setFieldValue('phoneNumber', newValue)}

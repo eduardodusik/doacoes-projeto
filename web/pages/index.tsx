@@ -29,7 +29,7 @@ const Home: NextPage<HomeProps> = ({ data }) => {
           <Grid container spacing={4}>
             {data.map(item => (
               <Grid item md={3} key={item.id}>
-                <Card component={Paper} style={{ cursor: 'pointer' }} onClick={goToEvent.bind(this, item.id)}>
+                <Card component={Paper} style={{ cursor: 'pointer', height: '100%' }} onClick={goToEvent.bind(this, item.id)}>
                   <CardMedia
                     component="img"
                     height="194"
