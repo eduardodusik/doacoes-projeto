@@ -36,11 +36,6 @@ const theme = createTheme({
         direction: 'row',
       },
     },
-    MuiPaper: {
-      defaultProps: {
-        elevation: 0,
-      },
-    },
     MuiLink: {
       defaultProps: {
         sx: {

@@ -6,3 +6,8 @@ export interface CreateEventPayload {
   responsibleName: string
   phoneNumber: string
 }
+
+export interface EventResponse extends CreateEventPayload {
+  id: string
+  createdAt: string
+}

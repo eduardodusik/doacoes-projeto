@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AppThemeProvider>
       <Header />
-      <Box pt={4}>
+      <Box pt={4} pb={4}>
         <Component {...pageProps} />
       </Box>
     </AppThemeProvider>
